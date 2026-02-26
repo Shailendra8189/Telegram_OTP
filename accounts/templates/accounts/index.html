@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram Bot Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0088cc;
+            --primary-hover: #006699;
+            --bg-color: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text-color: #f8fafc;
+            --text-muted: #94a3b8;
+            --error-color: #ef4444;
+            --success-color: #22c55e;
+            --input-bg: rgba(15, 23, 42, 0.5);
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: radial-gradient(circle at 50% -20%, #1e1b4b, var(--bg-color) 70%);
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 40px 30px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.8s ease-out;
+            transition: all 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo svg {
+            width: 64px;
+            height: 64px;
+            fill: var(--primary);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        p.subtitle {
+            color: var(--text-muted);
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input[type="text"],
+        input[type="tel"] {
+            width: 100%;
+            padding: 14px 16px;
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            color: var(--text-color);
+            font-size: 16px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 136, 204, 0.2);
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        button:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -10px var(--primary);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .error,
+        .success {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            text-align: center;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .error {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error-color);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .success {
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--success-color);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: var(--text-color);
+        }
+
+        /* Dashboard Styles */
+        .dashboard {
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .welcome {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .logout-btn {
+            width: auto;
+            padding: 8px 16px;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            font-size: 14px;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: none;
+        }
+
+        .history-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--text-muted);
+        }
+
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        .history-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .history-list::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+
+        .history-item {
+            background: var(--input-bg);
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.2s ease;
+        }
+
+        .history-item:hover {
+            transform: scale(1.02);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .history-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .history-ip {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .history-time,
+        .history-agent {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .history-agent {
+            max-width: 250px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-success {
+            background: rgba(34, 197, 94, 0.15);
+            color: var(--success-color);
+        }
+
+        .status-failed {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--error-color);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container {% if user.is_authenticated %}dashboard{% endif %}">
+
+        {% if user.is_authenticated %}
+        <div class="header">
+            <div class="welcome">
+                Welcome, {% if user.telegram_username %}@{{ user.telegram_username }}{% elif user.phone_number %}{{
+                user.phone_number }}{% else %}User{% endif %}!
+            </div>
+            <form method="POST" style="margin: 0;">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="logout">
+                <button type="submit" class="logout-btn">Logout</button>
+            </form>
+        </div>
+
+        <div class="history-title">Recent Login Activity</div>
+
+        {% if recent_logins %}
+        <div class="history-list">
+            {% for login in recent_logins %}
+            <div class="history-item">
+                <div class="history-info">
+                    <div class="history-ip">{{ login.ip_address|default:"Unknown IP" }}</div>
+                    <div class="history-time">{{ login.login_time|date:"M d, Y H:i" }}</div>
+                    <div class="history-agent" title="{{ login.user_agent }}">{{ login.user_agent|default:"Unknown
+                        Device" }}</div>
+                </div>
+                <div
+                    class="status-badge {% if login.status == 'SUCCESS' %}status-success{% else %}status-failed{% endif %}">
+                    {{ login.status }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="subtitle" style="text-align: left;">No recent login history found.</p>
+        {% endif %}
+
+        {% else %}
+
+        <div class="logo">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path
+                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.19-.08-.05-.19-.02-.27 0-.11.03-1.92 1.23-5.42 3.61-.51.36-.98.54-1.4.52-.46-.02-1.34-.26-1.99-.48-.8-.27-1.43-.41-1.38-.87.03-.24.3-.48.82-.74 3.23-1.41 5.39-2.34 6.48-2.8 3.08-1.31 3.72-1.54 4.14-1.55.09 0 .28.02.4.1.1.07.14.16.16.26.01.07.03.18.01.26z" />
+            </svg>
+        </div>
+
+        {% if error %}
+        <div class="error">{{ error }}</div>
+        {% endif %}
+
+        {% if message %}
+        <div class="success">{{ message }}</div>
+        {% endif %}
+
+        {% if state == 'send_otp' %}
+        <h1>Secure Login</h1>
+        <p class="subtitle">Enter your details to receive a secure OTP via Telegram</p>
+
+        <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="send_otp">
+            <div class="form-group">
+                <label for="identifier">Telegram Username or Phone Number</label>
+                <input type="text" id="identifier" name="identifier" placeholder="e.g. @username or 1234567890"
+                    required>
+            </div>
+            <button type="submit">
+                Send OTP
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+            </button>
+        </form>
+
+        {% elif state == 'verify_otp' %}
+        <h1>Verify OTP</h1>
+        <p class="subtitle">Enter the 5-digit code sent to your Telegram to continue</p>
+
+        <div
+            style="display: flex; justify-content: space-around; background: rgba(0,0,0,0.2); padding: 12px; border-radius: 12px; margin-bottom: 24px; border: 1px solid var(--border-color);">
+            {% if otp_expires_at %}
+            <div id="otp-timer-container" style="text-align: center;">
+                <div style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; font-weight: 600;">
+                    Time Remaining</div>
+                <div id="otp-timer" style="font-size: 18px; font-weight: bold; color: var(--primary); margin-top: 4px;">
+                    --:--</div>
+            </div>
+            {% endif %}
+
+            {% if otp_remaining_attempts is not None %}
+            <div style="text-align: center; border-left: 1px solid var(--border-color); padding-left: 20px;">
+                <div style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; font-weight: 600;">
+                    Attempts Left</div>
+                <div
+                    style="font-size: 18px; font-weight: bold; color: {% if otp_remaining_attempts > 1 %}var(--success-color){% else %}var(--error-color){% endif %}; margin-top: 4px;">
+                    {{ otp_remaining_attempts }} / 3</div>
+            </div>
+            {% endif %}
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="verify_otp">
+            <input type="hidden" name="identifier" value="{{ identifier }}">
+
+            <div class="form-group">
+                <label for="code">OTP Code</label>
+                <input type="text" id="code" name="code" placeholder="•••••" maxlength="5" required
+                    autocomplete="one-time-code"
+                    style="letter-spacing: 8px; text-align: center; font-size: 24px; font-weight: bold;">
+            </div>
+            <button type="submit" id="verify-btn">
+                Verify & Login
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+            </button>
+        </form>
+
+        <a href="{% url 'accounts:index' %}" class="back-link">← Try a different Username/Phone</a>
+
+        {% if otp_expires_at %}
+        <script>
+            const expiresAt = {{ otp_expires_at }} * 1000;
+            const timerElement = document.getElementById('otp-timer');
+            const verifyBtn = document.getElementById('verify-btn');
+            const codeInput = document.getElementById('code');
+
+            function updateTimer() {
+                const now = new Date().getTime();
+                const distance = expiresAt - now;
+
+                if (distance <= 0) {
+                    if (timerElement) {
+                        timerElement.innerHTML = "00:00 (EXPIRED)";
+                        timerElement.style.color = "var(--error-color)";
+                    }
+                    if (verifyBtn) {
+                        verifyBtn.disabled = true;
+                        verifyBtn.style.opacity = "0.5";
+                        verifyBtn.style.cursor = "not-allowed";
+                    }
+                    if (codeInput) {
+                        codeInput.disabled = true;
+                    }
+                    return;
+                }
+
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                if (timerElement) {
+                    timerElement.innerHTML = (minutes < 10 ? "0" : "") + minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+                }
+            }
+
+            updateTimer();
+            setInterval(updateTimer, 1000);
+        </script>
+        {% endif %}
+
+        {% endif %}
+
+        {% endif %}
+    </div>
+
+</body>
+
+</html>
